@@ -1,0 +1,16 @@
+{
+  "name": "course1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run server & npm run client",
+    "client": "npm --prefix client run start",
+    "server": "npm --prefix server run dev",
+    "deploy": "npm run build --prefix client && npm run --prefix server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

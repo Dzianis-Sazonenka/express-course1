@@ -1,0 +1,12 @@
+const { planets } = require('../../models/planets.model')
+
+const getAllPlanets = (req, res) => {
+    res.status(200).json({
+        planets,
+        message: 'All planets'
+    })
+}
+
+module.exports = {
+    getAllPlanets
+}
