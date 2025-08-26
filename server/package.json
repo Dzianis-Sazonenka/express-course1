@@ -6,7 +6,12 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "start": "node src/server.js",
-    "dev": "PORT=8000 nodemon src/server.js"
+    "dev": "PORT=8000 nodemon src/server.js",
+    "start:pm2": "pm2 start ecosystem.config.js",
+    "stop:pm2": "pm2 stop nasa-server",
+    "restart:pm2": "pm2 restart nasa-server",
+    "delete:pm2": "pm2 delete nasa-server",
+    "logs:pm2": "pm2 logs nasa-server"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +20,8 @@
   "dependencies": {
     "cors": "~2.8.5",
     "csv-parse": "~6.1.0",
-    "express": "~5.1.0"
+    "express": "~5.1.0",
+    "morgan": "~1.10.1"
   },
   "devDependencies": {
     "jest": "~30.0.5",
