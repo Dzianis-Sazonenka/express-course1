@@ -17,6 +17,13 @@ const getAllLaunches = async (req, res) => {
 const getLaunchById = async (req, res) => {
   try {
     const flightNumber = Number(req.params.id);
+    
+    if (isNaN(flightNumber)) {
+      return res.status(404).json({
+        error: 'Launch not found',
+      });
+    }
+    
     const launch = await Launch.findOne({ flightNumber }, { '__v': 0 });
     
     if (!launch) {
@@ -67,6 +74,13 @@ const addNewLaunch = async (req, res) => {
 const abortLaunch = async (req, res) => {
   try {
     const flightNumber = Number(req.params.id);
+    
+    if (isNaN(flightNumber)) {
+      return res.status(404).json({
+        error: 'Launch not found',
+      });
+    }
+    
     const launch = await Launch.findOneAndUpdate(
       { flightNumber },
       { 

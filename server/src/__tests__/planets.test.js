@@ -1,11 +1,11 @@
 const request = require('supertest');
 const app = require('../app');
-const { loadPlanetsData } = require('../models/planets.model');
+const { Planet } = require('../models/planets.schema');
+
+// Import setup to ensure database connection
+require('./setup');
 
 describe('Planets API', () => {
-  beforeAll(async () => {
-    await loadPlanetsData();
-  });
 
   describe('GET /planets', () => {
     test('It should respond with 200 success', async () => {
@@ -31,10 +31,31 @@ describe('Planets API', () => {
       
       // All returned planets should be habitable
       response.body.planets.forEach(planet => {
-        expect(planet).toHaveProperty('kepler_name');
+        expect(planet).toHaveProperty('kepoi_name');
         expect(planet).toHaveProperty('koi_disposition');
         expect(planet.koi_disposition).toBe('CONFIRMED');
+        expect(planet.koi_insol).toBeGreaterThan(0.36);
+        expect(planet.koi_insol).toBeLessThan(1.11);
+        expect(planet.koi_prad).toBeLessThan(1.6);
       });
+    });
+
+    test('It should return planets with correct schema fields', async () => {
+      const response = await request(app).get('/planets');
+      
+      if (response.body.planets.length > 0) {
+        const planet = response.body.planets[0];
+        expect(planet).toHaveProperty('kepid');
+        expect(planet).toHaveProperty('kepoi_name');
+        expect(planet).toHaveProperty('koi_disposition');
+        expect(planet).toHaveProperty('koi_prad');
+        expect(planet).toHaveProperty('koi_insol');
+        expect(planet).toHaveProperty('ra');
+        expect(planet).toHaveProperty('dec');
+        expect(typeof planet.kepid).toBe('number');
+        expect(typeof planet.koi_prad).toBe('number');
+        expect(typeof planet.koi_insol).toBe('number');
+      }
     });
   });
 });

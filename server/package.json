@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --setupFilesAfterEnv=./src/__tests__/setup.js",
+    "test:watch": "jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js",
     "start": "node src/server.js",
     "dev": "PORT=8000 nodemon src/server.js",
     "start:pm2": "pm2 start ecosystem.config.js",

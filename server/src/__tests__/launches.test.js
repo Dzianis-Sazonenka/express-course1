@@ -1,5 +1,9 @@
 const request = require('supertest');
 const app = require('../app');
+const { Launch } = require('../models/launches.model');
+
+// Import setup to ensure database connection
+require('./setup');
 
 describe('Launches API', () => {
   describe('GET /launches', () => {
@@ -22,13 +26,14 @@ describe('Launches API', () => {
     test('It should return the default launch', async () => {
       const response = await request(app).get('/launches');
       
-      expect(response.body.launches).toHaveLength(1);
-      expect(response.body.launches[0]).toMatchObject({
+      expect(response.body.launches.length).toBeGreaterThanOrEqual(1);
+      const defaultLaunch = response.body.launches.find(launch => launch.flightNumber === 1);
+      expect(defaultLaunch).toMatchObject({
         flightNumber: 1,
         mission: 'Kepler-442 b',
         rocket: 'Explorer-1',
         target: 'Kepler-442 b',
-        customer: ['SpaceX', 'NASA'],
+        customers: ['SpaceX', 'NASA'],
         upcoming: true,
         success: true,
       });
@@ -72,7 +77,7 @@ describe('Launches API', () => {
       rocket: 'Falcon Heavy',
       launchDate: '2024-06-15',
       target: 'Mars',
-      customer: ['NASA', 'SpaceX'],
+      customers: ['NASA', 'SpaceX'],
       destination: 'Mars',
     };
 
@@ -87,7 +92,7 @@ describe('Launches API', () => {
         mission: 'Mars Mission Alpha',
         rocket: 'Falcon Heavy',
         target: 'Mars',
-        customer: ['NASA', 'SpaceX'],
+        customers: ['NASA', 'SpaceX'],
         upcoming: true,
         success: true,
       });
@@ -114,7 +119,9 @@ describe('Launches API', () => {
       const minimalLaunchData = {
         mission: 'Test Mission',
         rocket: 'Test Rocket',
+        launchDate: '2024-12-25',
         target: 'Test Target',
+        destination: 'Test Target',
       };
 
       const response = await request(app)
@@ -122,7 +129,7 @@ describe('Launches API', () => {
         .send(minimalLaunchData)
         .expect(201);
 
-      expect(response.body.customer).toEqual([]);
+      expect(response.body.customers).toEqual([]);
       expect(response.body.upcoming).toBe(true);
       expect(response.body.success).toBe(true);
       expect(response.body).toHaveProperty('flightNumber');
@@ -137,7 +144,9 @@ describe('Launches API', () => {
         .send({
           mission: 'Test Abort Mission',
           rocket: 'Test Rocket',
+          launchDate: '2024-12-25',
           target: 'Test Target',
+          destination: 'Test Target',
         });
 
       const flightNumber = createResponse.body.flightNumber;
@@ -184,8 +193,10 @@ describe('Launches API', () => {
         .send({
           mission: 'Integration Test Mission',
           rocket: 'Integration Rocket',
+          launchDate: '2024-12-25',
           target: 'Integration Target',
-          customer: ['Test Customer'],
+          destination: 'Integration Target',
+          customers: ['Test Customer'],
         });
 
       expect(createResponse.status).toBe(201);
