@@ -6,10 +6,13 @@ const PORT = process.env.PORT || 8000;
 
 const server = http.createServer(app);
 
-const {loadPlanetsData} = require('./models/planets.model')
+const {loadPlanetsData} = require('./models/planets.schema');
+const {loadLaunchData} = require('./models/launches.model');
+
 async function startServer() {
     await mongoConnect();
     await loadPlanetsData();
+    await loadLaunchData();
     server.listen(PORT, () => {
         console.log(`Server running at http://localhost:${PORT}/`);
     });
