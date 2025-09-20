@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest --setupFilesAfterEnv=./src/__tests__/setup.js",
-    "test:watch": "jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js",
+    "test": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
+    "test:watch": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
     "start": "node src/server.js",
     "dev": "PORT=8000 nodemon src/server.js",
     "start:pm2": "pm2 start ecosystem.config.js",
@@ -18,14 +18,21 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "~2.8.5",
     "csv-parse": "~6.1.0",
+    "dotenv": "^17.2.2",
     "express": "~5.1.0",
+    "express-session": "^1.18.2",
     "mongoose": "~8.5.0",
-    "morgan": "~1.10.1"
+    "morgan": "~1.10.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
     "jest": "~30.0.5",
+    "jest-mock-req-res": "^1.0.2",
+    "mongodb-memory-server": "^10.2.1",
     "nodemon": "~3.1.10",
     "supertest": "~7.1.4"
   }
