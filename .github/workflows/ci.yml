@@ -1,0 +1,92 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    
+    services:
+      # Spin up a MongoDB container for testing
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' localhost:27017/test --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+      
+      # Install server dependencies
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+      
+      # Install client dependencies
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci
+      
+      # Create .env file for testing
+      - name: Create test environment file
+        working-directory: ./server
+        run: |
+          cat > .env <<EOL
+          NODE_ENV=test
+          MONGO_URL=mongodb://localhost:27017/test
+          SESSION_SECRET=test-session-secret
+          FRONTEND_URL=http://localhost:3000
+          EOL
+      
+      # Run server tests
+      - name: Run server tests
+        working-directory: ./server
+        run: npm test
+        env:
+          CI: true
+      
+      # Optionally, you can add client tests here when they're ready
+      # - name: Run client tests
+      #   working-directory: ./client
+      #   run: npm test
+      #   env:
+      #     CI: true
+      
+      # Optionally, build the client to catch any build errors
+      - name: Build client
+        working-directory: ./client
+        run: npm run build
+
+  # Add a job for linting if you have ESLint or other linters
+  # lint:
+  #   name: Lint
+  #   runs-on: ubuntu-latest
+   
+  #   steps:
+  #     - uses: actions/checkout@v3
+      
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18.x'
+      
+  #     - name: Install dependencies
+  #       run: npm ci
+      
+  #     - name: Run linter
+  #       run: npm run lint
