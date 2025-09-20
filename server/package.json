@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest --setupFilesAfterEnv=./src/__tests__/setup.js",
-    "test:watch": "jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js",
+    "test": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
+    "test:watch": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
     "start": "node src/server.js",
     "dev": "PORT=8000 nodemon src/server.js",
     "start:pm2": "pm2 start ecosystem.config.js",
@@ -31,6 +31,8 @@
   },
   "devDependencies": {
     "jest": "~30.0.5",
+    "jest-mock-req-res": "^1.0.2",
+    "mongodb-memory-server": "^10.2.1",
     "nodemon": "~3.1.10",
     "supertest": "~7.1.4"
   }
