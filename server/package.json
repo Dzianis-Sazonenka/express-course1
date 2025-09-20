@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
-    "test:watch": "WATCHMAN_DISABLED=1 NODE_ENV=test jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js --no-watchman",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "test": "NODE_ENV=test jest --setupFilesAfterEnv=./src/__tests__/setup.js --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test jest --watch --setupFilesAfterEnv=./src/__tests__/setup.js",
+    "test:coverage": "NODE_ENV=test jest --coverage --setupFilesAfterEnv=./src/__tests__/setup.js",
+    "ci": "npm run lint && npm test",
     "start": "node src/server.js",
     "dev": "PORT=8000 nodemon src/server.js",
     "start:pm2": "pm2 start ecosystem.config.js",
@@ -30,9 +34,13 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
     "jest": "~30.0.5",
     "jest-mock-req-res": "^1.0.2",
-    "mongodb-memory-server": "^10.2.1",
+    "mongodb-memory-server": "^9.0.0",
     "nodemon": "~3.1.10",
     "supertest": "~7.1.4"
   }
