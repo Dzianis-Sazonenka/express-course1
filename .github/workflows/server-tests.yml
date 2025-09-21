@@ -12,6 +12,12 @@ on:
       - 'server/**'
       - '.github/workflows/server-tests.yml'
 
+# This makes the runner check out the code
+# and sets up the working directory properly
+defaults:
+  run:
+    working-directory: ./server
+
 jobs:
   lint:
     name: Lint
@@ -25,14 +31,13 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       
-      - name: Install dependencies
+      - name: Install server dependencies
         working-directory: ./server
-        run: npm ci
-      
-      - name: Run ESLint
-        working-directory: ./server
-        run: npm run lint
+        run: |
+          npm ci
+          npm run lint
   
   test:
     name: Test
@@ -58,8 +63,9 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       
-      - name: Install dependencies
+      - name: Install server dependencies
         working-directory: ./server
         run: npm ci
       
@@ -75,12 +81,12 @@ jobs:
       
       - name: Run tests
         working-directory: ./server
-        run: npm run ci
+        run: npm run test:ci
         env:
           CI: true
       
-      - name: Upload coverage to Codecov (if token is present)
-        if: success() && github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+      - name: Upload coverage to Codecov
+        if: success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: codecov/codecov-action@v3
         with:
           directory: ./server/coverage
